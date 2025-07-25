@@ -1,0 +1,135 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+.env.*
+!.env.example
+/tools/.env
+
+# Security files
+secret_key.txt
+*_key.txt
+*.pem
+*.key
+
+# Electron specific
+release
+.electron-builder
+electron-builder.yml
+*.dmg
+*.exe
+*.deb
+*.AppImage
+*.snap
+*.blockmap
+*.zip
+latest-mac.yml
+latest-linux.yml
+latest-win.yml
+.bolt
+__pycache__
+
+
+# Code signing files
+package-mac-signed.sh
+certificate.p12
+
+./Support
+python-env
+.clara
+
+./py_backend/__pycache__
+./py_backend/cache
+./py_backend/python-env
+./py_backend/python-env/cache
+./py_backend/python-env/pip-cache
+./py_backend/python-env/python-env
+
+.cursor
+
+# any files in tools
+tools/*
+
+/clara_interpreter_dockerstuff
+
+electron/llamacpp-binaries/models/*
+
+testing_sdk/*
+
+sdk/node_modules/*
+
+clara-sdk-docs/*
+
+electron/llamacpp-binaries/config.yaml
+
+sdk_examples/*
+electron/llamacpp-binaries/config.yaml
+battery-report.html
+electron/llamacpp-binaries/config.yaml
+landing/*
+issues.md
+# Local Netlify folder
+.netlify
+
+# LLAMACPP BINARIES - Exclude only large binary files from platform directories
+# Keep directory structure and config files, exclude only binaries
+
+# Exclude binary files from specific platform directories
+electron/llamacpp-binaries/darwin-arm64/*.dylib
+electron/llamacpp-binaries/darwin-arm64/llama-*
+electron/llamacpp-binaries/darwin-arm64/lib*
+electron/llamacpp-binaries/darwin-arm64/*-server
+electron/llamacpp-binaries/darwin-arm64/ggml-*
+
+electron/llamacpp-binaries/linux-x64/*.so
+electron/llamacpp-binaries/linux-x64/llama-*
+electron/llamacpp-binaries/linux-x64/lib*
+electron/llamacpp-binaries/linux-x64/*-server
+electron/llamacpp-binaries/linux-x64/ggml-*
+electron/llamacpp-binaries/linux-x64/rpc-server
+electron/llamacpp-binaries/linux-x64/vulkan-shaders-gen
+
+electron/llamacpp-binaries/win32-x64/*.dll
+electron/llamacpp-binaries/win32-x64/llama-*
+electron/llamacpp-binaries/win32-x64/lib*
+electron/llamacpp-binaries/win32-x64/*-server
+electron/llamacpp-binaries/win32-x64/ggml-*
+
+# Keep config files, documentation, and scripts
+!electron/llamacpp-binaries/*.md
+!electron/llamacpp-binaries/*.json
+!electron/llamacpp-binaries/*.yaml
+!electron/llamacpp-binaries/*.sh
+!electron/llamacpp-binaries/LICENSE*
+py_backend/cache/*
+py_backend/.venv/*
+py_backend/light_rag_examples/*
+electron/llamacpp-binaries/darwin-arm64-backup*
+notarization.env
+# anything with .env in the name
+.env
+scripts/notarize-production.sh
+notarize-production.sh
+setup-notarization-env.sh
+mcp_workspace/*

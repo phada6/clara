@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #333;
+      line-height: 1.5;
+      overflow: hidden;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 50px;
+      border-radius: 32px;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      text-align: center;
+      width: min(900px, 80vw);
+      max-width: 1200px;
+      position: relative;
+      overflow: hidden;
+      margin: auto;
+      z-index: 1;
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .logo-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: scale(0);
+      opacity: 0;
+    }
+    
+    h2 {
+      font-size: 36px;
+      font-weight: 600;
+      margin: 20px 0;
+      color: #2c3e50;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      color: #7f8c8d;
+      margin-bottom: 30px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    
+    .message {
+      font-size: 16px;
+      color: #666;
+      margin: 20px 0;
+      padding: 0 20px;
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    
+    .status-container {
+      margin: 25px 0;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    
+    .status {
+      font-size: 16px;
+      color: #666;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      margin-bottom: 10px;
+    }
+    
+    .status.warning {
+      color: #f39c12;
+    }
+    
+    .status.error {
+      color: #e74c3c;
+    }
+    
+    .status.success {
+      color: #2ecc71;
+    }
+    
+    .progress-container {
+      width: 100%;
+      margin: 20px 0;
+      opacity: 0;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+      animation: progress-shimmer 2s infinite;
+    }
+    
+    @keyframes progress-shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .progress-bar .fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 10px;
+    }
+    
+    .spinner-container {
+      margin-top: 20px;
+      opacity: 0;
+    }
+    
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(102, 126, 234, 0.2);
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .terminal {
+      margin-top: 30px;
+      background: linear-gradient(135deg, #1e1e1e, #2d2d2d);
+      border-radius: 16px;
+      padding: 25px;
+      height: min(280px, 25vh);
+      width: calc(100% - 40px);
+      overflow-y: auto;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', monospace;
+      font-size: 14px;
+      color: #fff;
+      text-align: left;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .terminal::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .terminal::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    .terminal::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+    }
+    
+    .terminal-line {
+      margin: 3px 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    
+    .terminal-line.info { color: #fff; }
+    .terminal-line.success { color: #2ecc71; }
+    .terminal-line.warning { color: #f39c12; }
+    .terminal-line.error { color: #e74c3c; }
+    
+    .error-message {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(231, 76, 60, 0.1);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      border-radius: 12px;
+      color: #e74c3c;
+      font-size: 14px;
+    }
+    
+    .fade {
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .fade.hide {
+      opacity: 0;
+    }
+    
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Responsive design for different screen sizes */
+    @media (max-width: 1024px) {
+      .container {
+        width: min(700px, 85vw);
+        padding: 40px;
+      }
+      
+      .logo {
+        width: 150px;
+        height: 150px;
+      }
+      
+      h2 {
+        font-size: 32px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        width: min(600px, 90vw);
+        padding: 30px;
+      }
+      
+      .logo {
+        width: 120px;
+        height: 120px;
+      }
+      
+      h2 {
+        font-size: 28px;
+      }
+      
+      .terminal {
+        height: min(200px, 20vh);
+      }
+    }
+    
+    @media (min-width: 1440px) {
+      .container {
+        width: min(1000px, 70vw);
+        padding: 60px;
+      }
+      
+      .logo {
+        width: 200px;
+        height: 200px;
+      }
+      
+      h2 {
+        font-size: 40px;
+      }
+    }
+    
+    @media (min-width: 1920px) {
+      .container {
+        width: min(1200px, 60vw);
+        padding: 80px;
+      }
+      
+      .logo {
+        width: 220px;
+        height: 220px;
+      }
+      
+      h2 {
+        font-size: 44px;
+      }
+      
+      .terminal {
+        height: min(320px, 25vh);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container fade" id="container">
+    <div class="logo-container">
+      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDI1NiAyNTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjEyOCIgY3k9IjEyOCIgcj0iMTI4IiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMF8xKSIvPgo8cGF0aCBkPSJNMTI4IDQ4QzE2NC4yIDQ4IDE5My42IDY5LjYgMjA4IDEwMEMyMTYuNCA4Ni40IDIwOCA2OCAyMDggNjhTMTkyIDQ4IDE2MCA0OEMxNDQgNDggMTI4IDQ4IDEyOCA0OFoiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAuMiIvPgo8cGF0aCBkPSJNMTI4IDIwOEM5MS44IDIwOCA2Mi40IDE4Ni40IDQ4IDE1NkMzOS42IDE2OS42IDQ4IDE4OCA0OCAxODhTNjQgMjA4IDk2IDIwOEMxMTIgMjA4IDEyOCAyMDggMTI4IDIwOFoiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAuMiIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzBfMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMjU2IiB5Mj0iMjU2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM2NjdFRUEiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzY0QkEyIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPHN2Zz4K" class="logo" alt="Clara" id="logo">
+    </div>
+    
+    <h2 id="title">Clara</h2>
+    <div class="subtitle" id="subtitle">Your AI Assistant</div>
+    <div class="message" id="message">Setting up your AI environment. This may take a moment for the first-time setup.</div>
+    
+    <div class="status-container">
+      <div class="status" id="status">Initializing...</div>
+      <div class="error-message" id="error"></div>
+    </div>
+    
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar">
+        <div class="fill" id="progress"></div>
+      </div>
+    </div>
+    
+    <div class="terminal" id="terminal"></div>
+    
+    <div class="spinner-container" id="spinnerContainer">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <!-- GSAP Scripts -->
+  <script src="./vendor/gsap.min.js"></script>
+  <script src="./vendor/textplugin.min.js"></script>
+  <script>
+    const { ipcRenderer } = require('electron');
+    
+    // Initialize GSAP timeline
+    const tl = gsap.timeline();
+    
+    // Entrance animation
+    function initializeAnimations() {
+      // Set initial states
+      gsap.set("#container", { scale: 0.8, opacity: 0 });
+      gsap.set(".logo", { scale: 0, opacity: 0 });
+      gsap.set("#title", { opacity: 0, y: 30 });
+      gsap.set("#subtitle", { opacity: 0, y: 20 });
+      gsap.set("#message", { opacity: 0, y: 15 });
+      gsap.set("#status", { opacity: 0, y: 10 });
+      gsap.set("#progressContainer", { opacity: 0 });
+      gsap.set("#terminal", { opacity: 0, y: 20 });
+      gsap.set("#spinnerContainer", { opacity: 0 });
+      
+      // Create timeline
+      tl.to("#container", { 
+        duration: 1, 
+        scale: 1, 
+        opacity: 1, 
+        ease: "back.out(1.7)" 
+      })
+      .to(".logo", { 
+        duration: 1, 
+        scale: 1, 
+        opacity: 1, 
+        ease: "back.out(1.7)" 
+      }, "-=0.6")
+      .to("#title", { 
+        duration: 0.8, 
+        opacity: 1, 
+        y: 0, 
+        ease: "power2.out" 
+      }, "-=0.4")
+      .to("#subtitle", { 
+        duration: 0.6, 
+        opacity: 1, 
+        y: 0, 
+        ease: "power2.out" 
+      }, "-=0.2")
+      .to("#message", { 
+        duration: 0.6, 
+        opacity: 1, 
+        y: 0, 
+        ease: "power2.out" 
+      }, "-=0.1")
+      .to("#status", { 
+        duration: 0.5, 
+        opacity: 1, 
+        y: 0, 
+        ease: "power2.out" 
+      }, "-=0.1")
+      .to("#progressContainer", { 
+        duration: 0.5, 
+        opacity: 1, 
+        ease: "power2.out" 
+      }, "-=0.1")
+      .to("#terminal", { 
+        duration: 0.6, 
+        opacity: 1, 
+        y: 0, 
+        ease: "power2.out" 
+      }, "-=0.1")
+      .to("#spinnerContainer", { 
+        duration: 0.4, 
+        opacity: 1, 
+        ease: "power2.out" 
+      }, "-=0.1");
+      
+      // Logo and glow are now completely static - no animations
+    }
+    
+    function addTerminalLine(message, type = 'info') {
+      const terminal = document.getElementById('terminal');
+      const line = document.createElement('div');
+      line.className = `terminal-line ${type}`;
+      line.textContent = message;
+      terminal.appendChild(line);
+      
+      // Animate the line entrance
+      gsap.fromTo(line, 
+        { opacity: 0, x: -10 },
+        { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }
+      );
+      
+      // Auto scroll
+      terminal.scrollTop = terminal.scrollHeight;
+      
+      // Limit terminal lines to prevent performance issues
+      const lines = terminal.querySelectorAll('.terminal-line');
+      if (lines.length > 50) {
+        lines[0].remove();
+      }
+    }
+    
+    function updateStatus(message, type = 'info', progressData = null) {
+      console.log(`[Splash] ${type}: ${message}`);
+      const statusEl = document.getElementById('status');
+      const errorEl = document.getElementById('error');
+      const progressEl = document.getElementById('progress');
+      
+      // Animate status change
+      gsap.to(statusEl, {
+        opacity: 0,
+        y: -10,
+        duration: 0.3,
+        ease: "power2.out",
+        onComplete: () => {
+          statusEl.textContent = message;
+          statusEl.className = 'status ' + type;
+          
+          gsap.fromTo(statusEl,
+            { opacity: 0, y: 10 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+          );
+        }
+      });
+
+      // Add message to terminal with typewriter effect
+      addTerminalLine(message, type);
+
+      if (type === 'error') {
+        errorEl.textContent = message;
+        errorEl.style.display = 'block';
+        gsap.fromTo(errorEl,
+          { opacity: 0, scale: 0.9 },
+          { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+        );
+      } else {
+        gsap.to(errorEl, {
+          opacity: 0,
+          duration: 0.3,
+          onComplete: () => {
+            errorEl.style.display = 'none';
+          }
+        });
+      }
+
+      // Update progress bar with animation
+      let progressPercentage = null;
+      
+      // Check for progress data from Docker API
+      if (progressData && progressData.percentage) {
+        progressPercentage = progressData.percentage;
+      }
+      // Fallback to parsing percentage from message
+      else if (message.includes('%')) {
+        const match = message.match(/(\d+(?:\.\d+)?)%/);
+        if (match) {
+          progressPercentage = parseFloat(match[1]);
+        }
+      }
+      // Check for specific Docker pulling stages
+      else if (message.includes('Pulling')) {
+        progressPercentage = 10;
+      } else if (message.includes('Downloading') || message.includes('downloading')) {
+        progressPercentage = progressData?.percentage || 25;
+      } else if (message.includes('Extracting') || message.includes('extracting')) {
+        progressPercentage = progressData?.percentage || 75;
+      } else if (message.includes('Pull complete') || message.includes('Successfully pulled')) {
+        progressPercentage = 100;
+      }
+      // General startup progress stages
+      else if (message.includes('Docker environment')) {
+        progressPercentage = 5;
+      } else if (message.includes('checking for updates')) {
+        progressPercentage = 15;
+      } else if (message.includes('All containers are up to date')) {
+        progressPercentage = 90;
+      } else if (message.includes('All services started')) {
+        progressPercentage = 95;
+      } else if (message.includes('Ready') || message.includes('successfully')) {
+        progressPercentage = 100;
+      }
+      
+      if (progressPercentage !== null) {
+        gsap.to(progressEl, {
+          width: `${Math.min(progressPercentage, 100)}%`,
+          duration: 0.8,
+          ease: "power2.out"
+        });
+      }
+      
+      // Success animation - removed logo scaling
+      if (type === 'success') {
+        // Logo remains static - no animations on success
+      }
+    }
+
+    function hide() {
+      gsap.to("#container", {
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.5,
+        ease: "power2.inOut"
+      });
+    }
+
+    function show() {
+      gsap.to("#container", {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "back.out(1.7)"
+      });
+    }
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeAnimations();
+    });
+
+    // IPC listeners
+    ipcRenderer.on('status', (_, data) => {
+      if (typeof data === 'string') {
+        updateStatus(data);
+      } else {
+        updateStatus(data.message, data.type, data.progress);
+      }
+    });
+
+    ipcRenderer.on('hide', hide);
+    ipcRenderer.on('show', show);
+
+    // Log any uncaught errors with animation
+    window.onerror = function(msg, url, line) {
+      updateStatus(`Error: ${msg} (${url}:${line})`, 'error');
+    };
+  </script>
+</body>
+</html>
